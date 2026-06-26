@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+/*
+  ASSET NOTE FOR HACKATHON SUBMISSION:
+  The brief provides an official asset_package.zip with SVGs, a 2-font
+  typography spec, and a fixed hex palette. That package was not available
+  when this scaffold was generated, so the tokens below are placeholders
+  built to the same *shape* the brief describes (one display face, one
+  utility/mono face, a small named hex palette). Before submitting:
+    1. Drop the provided SVGs into /src/assets/svg and swap the placeholder
+       icon usages in BentoAccordion.jsx / Hero.jsx.
+    2. Replace --font-display / --font-body / --font-mono below with the
+       @font-face rules for the two official font families.
+    3. Replace the hex values in :root with the official palette.
+  Skipping this step costs the full 15-pt "Asset Compliance" line item.
+*/
+
+:root {
+  /* ---- Color tokens (placeholder palette, named per design plan) ---- */
+  --color-ink: #0b0f14;        /* page background */
+  --color-panel: #101620;      /* card / panel surface */
+  --color-panel-raised: #161d29;
+  --color-hairline: #222a35;   /* borders / dividers */
+  --color-text: #e8ecef;       /* primary text */
+  --color-text-dim: #8a93a3;   /* secondary text */
+  --color-accent: #7c9cff;     /* electric indigo - primary CTA / focus */
+  --color-signal: #3ddc97;     /* signal green - "live"/active state */
+  --color-warn: #ffb454;       /* used sparingly: annual-discount badge */
+
+  /* ---- Type tokens ---- */
+  --font-display: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* ---- Motion tokens (per Entrance & Motion Constraints) ---- */
+  --ease-out-micro: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-inout-layout: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 180ms;
+  --dur-layout: 360ms;
+}
+
+html, body {
+  background: var(--color-ink);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+.font-display { font-family: var(--font-display); }
+.font-mono { font-family: var(--font-mono); }
+
+.bg-grain {
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.035) 1px, transparent 0);
+  background-size: 22px 22px;
+}
