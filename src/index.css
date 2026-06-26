@@ -1,38 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap");
 @import "tailwindcss";
 
 /*
-  ASSET NOTE FOR HACKATHON SUBMISSION:
-  The brief provides an official asset_package.zip with SVGs, a 2-font
-  typography spec, and a fixed hex palette. That package was not available
-  when this scaffold was generated, so the tokens below are placeholders
-  built to the same *shape* the brief describes (one display face, one
-  utility/mono face, a small named hex palette). Before submitting:
-    1. Drop the provided SVGs into /src/assets/svg and swap the placeholder
-       icon usages in BentoAccordion.jsx / Hero.jsx.
-    2. Replace --font-display / --font-body / --font-mono below with the
-       @font-face rules for the two official font families.
-    3. Replace the hex values in :root with the official palette.
-  Skipping this step costs the full 15-pt "Asset Compliance" line item.
+  OFFICIAL ASSETS — MP025 palette + fonts from colorPallet.pdf + fonts.pdf
+
+  Palette:
+    Arctic Powder        #F1F6F4
+    Forsythia            #FFC801
+    Nocturnal Expedition #114C5A
+    Mystic Mint          #D9E8E2
+    Deep Saffron         #FF9932
+    Oceanic Noir         #172B36
+
+  Typography:
+    JetBrains Mono  → headers / code-like elements
+    Inter           → body text / UI elements
 */
 
 :root {
-  /* ---- Color tokens (placeholder palette, named per design plan) ---- */
-  --color-ink: #0b0f14;        /* page background */
-  --color-panel: #101620;      /* card / panel surface */
-  --color-panel-raised: #161d29;
-  --color-hairline: #222a35;   /* borders / dividers */
-  --color-text: #e8ecef;       /* primary text */
-  --color-text-dim: #8a93a3;   /* secondary text */
-  --color-accent: #7c9cff;     /* electric indigo - primary CTA / focus */
-  --color-signal: #3ddc97;     /* signal green - "live"/active state */
-  --color-warn: #ffb454;       /* used sparingly: annual-discount badge */
+  /* ---- Color tokens (official MP025 palette) ---- */
+  --color-ink: #172B36;          /* Oceanic Noir — page background */
+  --color-panel: #114C5A;        /* Nocturnal Expedition — card/panel surface */
+  --color-panel-raised: #14586a; /* slightly lifted panel */
+  --color-hairline: rgba(217, 232, 226, 0.18); /* Mystic Mint, low opacity */
+  --color-text: #F1F6F4;         /* Arctic Powder — primary text */
+  --color-text-dim: #aebdc1;     /* Mystic Mint, darkened for AA contrast */
+  --color-accent: #FFC801;       /* Forsythia — primary accent / CTA / focus */
+  --color-signal: #FF9932;       /* Deep Saffron — secondary accent */
+  --color-warn: #FF9932;         /* Deep Saffron — reused for discount badge */
+  --color-mystic: #D9E8E2;       /* Mystic Mint — subtle highlights */
 
-  /* ---- Type tokens ---- */
-  --font-display: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+  /* ---- Type tokens (official typography) ---- */
+  --font-display: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
-  /* ---- Motion tokens (per Entrance & Motion Constraints) ---- */
+  /* ---- Motion tokens ---- */
   --ease-out-micro: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-inout-layout: cubic-bezier(0.65, 0, 0.35, 1);
   --dur-micro: 180ms;
@@ -57,10 +60,10 @@ html, body {
   }
 }
 
-.font-display { font-family: var(--font-display); }
+.font-display { font-family: var(--font-display); font-weight: 600; }
 .font-mono { font-family: var(--font-mono); }
 
 .bg-grain {
-  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.035) 1px, transparent 0);
+  background-image: radial-gradient(circle at 1px 1px, rgba(241,246,244,0.045) 1px, transparent 0);
   background-size: 22px 22px;
 }

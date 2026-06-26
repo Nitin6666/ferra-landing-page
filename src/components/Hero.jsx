@@ -1,15 +1,7 @@
 // src/components/Hero.jsx
 import { useEffect, useRef } from "react";
+import Icon from "./Icon";
 
-/**
- * LOADING SEQUENCE PERFORMANCE:
- * The entry orchestration is four staggered CSS transitions on opacity/
- * transform only (GPU-cheap), driven by adding a single `.is-in` class
- * after mount. Stagger steps are 0 / 90 / 160 / 230ms with a 200ms
- * transition each, so the whole sequence resolves at ~430ms — inside the
- * 500ms cap — and nothing here delays hydration or blocks interaction;
- * the class flip happens post-paint via requestAnimationFrame.
- */
 export default function Hero() {
   const rootRef = useRef(null);
 
@@ -44,17 +36,19 @@ export default function Hero() {
       <div className="entry-item delay-3 mt-9 flex flex-wrap items-center gap-4">
         <a
           href="#pricing"
-          className="rounded-lg bg-[var(--color-accent)] px-5 py-3 text-sm font-medium text-[var(--color-ink)] transition-colors duration-[180ms] hover:bg-[var(--color-accent)]/90"
+          className="flex items-center gap-2 rounded-lg bg-[var(--color-accent)] px-5 py-3 text-sm font-medium text-[var(--color-ink)] transition-colors duration-[180ms] hover:bg-[var(--color-accent)]/90"
           style={{ transitionTimingFunction: "var(--ease-out-micro)" }}
         >
           See pricing matrix
+          <Icon name="chevron-right" size={15} />
         </a>
         <a
           href="#features"
-          className="rounded-lg border border-[var(--color-hairline)] px-5 py-3 text-sm font-medium text-[var(--color-text)] transition-colors duration-[180ms] hover:border-[var(--color-accent)]"
+          className="flex items-center gap-2 rounded-lg border border-[var(--color-hairline)] px-5 py-3 text-sm font-medium text-[var(--color-text)] transition-colors duration-[180ms] hover:border-[var(--color-accent)]"
           style={{ transitionTimingFunction: "var(--ease-out-micro)" }}
         >
           Explore the platform
+          <Icon name="arrow-trending-up" size={15} className="text-[var(--color-signal)]" />
         </a>
       </div>
 

@@ -1,9 +1,11 @@
 // src/components/BentoAccordion.jsx
 import { useEffect, useRef, useState } from "react";
+import Icon from "./Icon";
 
 const FEATURES = [
   {
     id: "ingest",
+    icon: "arrow-path",
     title: "Ingest anything",
     short: "200+ connectors, schema drift handled automatically.",
     long:
@@ -12,6 +14,7 @@ const FEATURES = [
   },
   {
     id: "transform",
+    icon: "cube",
     title: "AI-assisted transforms",
     short: "Describe the shape you want, get production SQL/Python.",
     long:
@@ -20,6 +23,7 @@ const FEATURES = [
   },
   {
     id: "orchestrate",
+    icon: "cog",
     title: "Orchestration that self-heals",
     short: "Retries, backfills, and alerting without extra config.",
     long:
@@ -28,6 +32,7 @@ const FEATURES = [
   },
   {
     id: "observe",
+    icon: "chart-pie",
     title: "Live lineage graph",
     short: "Trace any field back to its source in two clicks.",
     long:
@@ -36,6 +41,7 @@ const FEATURES = [
   },
   {
     id: "govern",
+    icon: "link-solid",
     title: "Governance built in",
     short: "Row-level access, audit trails, residency controls.",
     long:
@@ -46,112 +52,76 @@ const FEATURES = [
 
 const MOBILE_QUERY = "(max-width: 767px)";
 
-/**
- * CONTEXT LOCK:
- * `activeIndex` is the single source of truth for "which node is currently
- * engaged," shared by both the desktop bento grid and the mobile accordion.
- * Hovering/focusing a bento node sets it; opening an accordion panel sets
- * it. A matchMedia listener watches the breakpoint — it never resets
- * activeIndex, it only swaps which layout reads it, so whatever was active
- * the instant the breakpoint is crossed stays open after the transition.
- */
 export default function BentoAccordion() {
-  const [activeIndex, setActiveIndex] = useState(1); // sensible default: the AI-transform node
+  const [activeIndex, setActiveIndex] = useState(1);
   const [isMobile, setIsMobile] = useState(
     () => typeof window !== "undefined" && window.matchMedia(MOBILE_QUERY).matches
   );
 
   useEffect(() => {
-    const mql = window.matchMedia(MOBILE_QUERY);
-    const onChange = (e) => setIsMobile(e.matches);
-    mql.addEventListener("change", onChange);
-    return () => mql.removeEventListener("change", onChange);
+    const mq = window.matchMedia(MOBILE_QUERY);
+    const handler = (e) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
   }, []);
 
   return (
-    <section
-      id="features"
-      aria-labelledby="features-heading"
-      className="relative mx-auto max-w-6xl px-6 py-28"
-    >
-      <div className="mb-12 max-w-xl">
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--color-accent)]">
-          01 · Platform surface
-        </p>
-        <h2
-          id="features-heading"
-          className="mt-3 font-display text-3xl font-medium leading-tight text-[var(--color-text)] sm:text-4xl"
-        >
-          Five systems, one running context.
-        </h2>
-        <p className="mt-3 text-[var(--color-text-dim)]">
-          Hover a node on desktop. Shrink the window mid-hover — the same
-          node stays open as the layout folds into an accordion.
-        </p>
-      </div>
+    <section id="features" className="mx-auto max-w-6xl px-6 py-24">
+      <p className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--color-text-dim)]">
+        Platform capabilities
+      </p>
+      <h2 className="mt-4 font-display text-3xl font-medium text-[var(--color-text)] sm:text-4xl">
+        Everything your data stack needs.
+      </h2>
 
       {isMobile ? (
-        <MobileAccordion
-          activeIndex={activeIndex}
-          setActiveIndex={setActiveIndex}
-        />
+        <MobileAccordion features={FEATURES} activeIndex={activeIndex} setActiveIndex={setActiveIndex} />
       ) : (
-        <DesktopBento activeIndex={activeIndex} setActiveIndex={setActiveIndex} />
+        <DesktopBento features={FEATURES} activeIndex={activeIndex} setActiveIndex={setActiveIndex} />
       )}
     </section>
   );
 }
 
-function DesktopBento({ activeIndex, setActiveIndex }) {
-  const sizeClass = {
-    lg: "sm:col-span-2 sm:row-span-2",
-    md: "sm:col-span-1 sm:row-span-1",
-    sm: "sm:col-span-1 sm:row-span-1",
-  };
-
+function DesktopBento({ features, activeIndex, setActiveIndex }) {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:grid-rows-2">
-      {FEATURES.map((f, i) => {
-        const active = activeIndex === i;
+    <div className="mt-10 grid grid-cols-3 grid-rows-2 gap-4" style={{ minHeight: 420 }}>
+      {features.map((f, i) => {
+        const isActive = activeIndex === i;
+        const colSpan = f.size === "lg" ? "col-span-2" : "col-span-1";
         return (
           <button
             key={f.id}
-            type="button"
             onMouseEnter={() => setActiveIndex(i)}
             onFocus={() => setActiveIndex(i)}
-            aria-pressed={active}
+            onClick={() => setActiveIndex(i)}
             className={[
-              "group relative flex flex-col justify-between overflow-hidden rounded-2xl border p-6 text-left",
-              "transition-[border-color,background-color,transform] duration-[180ms]",
-              sizeClass[f.size],
-              active
+              "group relative flex flex-col justify-between rounded-2xl border p-6 text-left transition-all",
+              colSpan,
+              isActive
                 ? "border-[var(--color-accent)] bg-[var(--color-panel-raised)]"
-                : "border-[var(--color-hairline)] bg-[var(--color-panel)] hover:border-[var(--color-text-dim)]",
+                : "border-[var(--color-hairline)] bg-[var(--color-panel)] hover:border-[var(--color-accent)]/50",
             ].join(" ")}
-            style={{ transitionTimingFunction: "var(--ease-out-micro)" }}
+            style={{ transitionDuration: "var(--dur-micro)", transitionTimingFunction: "var(--ease-out-micro)" }}
           >
-            <span
-              aria-hidden="true"
-              className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-[var(--color-accent)]/10 opacity-0 transition-opacity duration-[180ms] group-hover:opacity-100"
-              style={{ transitionTimingFunction: "var(--ease-out-micro)" }}
-            />
             <div>
-              <h3 className="font-display text-lg font-medium text-[var(--color-text)]">
-                {f.title}
-              </h3>
-              <p className="mt-1.5 text-sm text-[var(--color-text-dim)]">
-                {f.short}
+              <Icon
+                name={f.icon}
+                size={22}
+                className={isActive ? "text-[var(--color-accent)]" : "text-[var(--color-text-dim)]"}
+                style={{ transition: "color var(--dur-micro)" }}
+              />
+              <p className="mt-4 font-display text-lg font-medium text-[var(--color-text)]">{f.title}</p>
+              <p className="mt-2 text-sm text-[var(--color-text-dim)]">
+                {isActive ? f.long : f.short}
               </p>
             </div>
-            <p
-              className={[
-                "mt-4 text-sm text-[var(--color-text)] transition-[max-height,opacity] duration-[200ms] overflow-hidden",
-                active ? "max-h-32 opacity-100" : "max-h-0 opacity-0",
-              ].join(" ")}
-              style={{ transitionTimingFunction: "var(--ease-out-micro)" }}
-            >
-              {f.long}
-            </p>
+            {isActive && (
+              <span className="mt-4 inline-flex items-center gap-1.5 font-mono text-xs text-[var(--color-accent)]">
+                Active
+                <Icon name="arrow-trending-up" size={14} className="text-[var(--color-accent)]" />
+              </span>
+            )}
           </button>
         );
       })}
@@ -159,59 +129,42 @@ function DesktopBento({ activeIndex, setActiveIndex }) {
   );
 }
 
-function MobileAccordion({ activeIndex, setActiveIndex }) {
+function MobileAccordion({ features, activeIndex, setActiveIndex }) {
   return (
-    <div className="flex flex-col divide-y divide-[var(--color-hairline)] rounded-2xl border border-[var(--color-hairline)] bg-[var(--color-panel)]">
-      {FEATURES.map((f, i) => {
-        const open = activeIndex === i;
+    <div className="mt-8 flex flex-col gap-3">
+      {features.map((f, i) => {
+        const isOpen = activeIndex === i;
         return (
-          <div key={f.id} className="px-5">
+          <div
+            key={f.id}
+            className={[
+              "rounded-2xl border transition-colors",
+              isOpen
+                ? "border-[var(--color-accent)] bg-[var(--color-panel-raised)]"
+                : "border-[var(--color-hairline)] bg-[var(--color-panel)]",
+            ].join(" ")}
+          >
             <button
-              type="button"
-              aria-expanded={open}
-              aria-controls={`panel-${f.id}`}
-              onClick={() => setActiveIndex(open ? -1 : i)}
-              className="flex w-full items-center justify-between gap-4 py-4 text-left"
+              className="flex w-full items-center justify-between px-5 py-4 text-left"
+              onClick={() => setActiveIndex(isOpen ? -1 : i)}
             >
-              <span className="font-display text-base font-medium text-[var(--color-text)]">
-                {f.title}
-              </span>
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 14 14"
-                aria-hidden="true"
-                className="shrink-0 text-[var(--color-text-dim)] transition-transform duration-[200ms]"
-                style={{
-                  transitionTimingFunction: "var(--ease-out-micro)",
-                  transform: open ? "rotate(180deg)" : "rotate(0deg)",
-                }}
-              >
-                <path
-                  d="M2.5 5L7 9.5L11.5 5"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+              <div className="flex items-center gap-3">
+                <Icon
+                  name={f.icon}
+                  size={18}
+                  className={isOpen ? "text-[var(--color-accent)]" : "text-[var(--color-text-dim)]"}
                 />
-              </svg>
-            </button>
-            {/* grid-rows 0fr<->1fr trick: native CSS animation, no JS height measuring */}
-            <div
-              id={`panel-${f.id}`}
-              className="grid transition-[grid-template-rows] duration-[360ms]"
-              style={{
-                gridTemplateRows: open ? "1fr" : "0fr",
-                transitionTimingFunction: "var(--ease-inout-layout)",
-              }}
-            >
-              <div className="overflow-hidden">
-                <p className="pb-4 text-sm text-[var(--color-text-dim)]">
-                  {f.long}
-                </p>
+                <span className="font-display text-sm font-medium text-[var(--color-text)]">{f.title}</span>
               </div>
-            </div>
+              <Icon
+                name={isOpen ? "chevron-up" : "chevron-down"}
+                size={16}
+                className="text-[var(--color-text-dim)]"
+              />
+            </button>
+            {isOpen && (
+              <p className="px-5 pb-5 text-sm text-[var(--color-text-dim)]">{f.long}</p>
+            )}
           </div>
         );
       })}
